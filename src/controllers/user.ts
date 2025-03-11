@@ -1,9 +1,9 @@
-import type { Request, Response } from 'express';
+// import type { Request, Response } from 'express';
 
 
 
-export const createUser = (req: Request, res:Response) {
+// export const createUser = (req: Request, res:Response) {
 
     
 
-}
+// }
