@@ -1,8 +1,8 @@
 import app from './src/app'
-import express from 'express';
 import type {Request, Response} from "express";
+require('dotenv');
 
-const PORT = process.env.DB_PORT || 8000;
+const PORT = process.env.SRV_PORT || 8000;
 
 
 app.get("/", (req: Request, res: Response) => {

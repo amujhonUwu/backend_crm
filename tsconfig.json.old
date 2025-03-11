@@ -1,0 +1,53 @@
+
+{
+   "compilerOptions": {
+     // Enable latest features
+     "lib": ["ESNext", "DOM"],
+     "target": "ESNext",
+     "module": "ESNext",
+     "moduleDetection": "force",
+     "jsx": "react-jsx",
+     "allowJs": true,
+ 
+     // Bundler mode
+     "moduleResolution": "bundler",
+     "allowImportingTsExtensions": true,
+     "verbatimModuleSyntax": true,
+     "noEmit": true,
+ 
+     // Best practices
+     "strict": true,
+     "skipLibCheck": true,
+     "noFallthroughCasesInSwitch": true,
+ 
+     // Some stricter flags (disabled by default)
+     "noUnusedLocals": false,
+     "noUnusedParameters": false, 
+     "noPropertyAccessFromIndexSignature": false,
+ 
+ 
+     // Added for the DataBase?
+     "outDir": "./build",
+     "emitDecoratorMetadata": true,
+     "experimentalDecorators": true,
+     "sourceMap": true
+   },
+   "include": [
+     "src",
+     "custom_typings"
+   ],
+ }
+ 
+ // {
+//    "compilerOptions": {
+//       "lib": [
+//          "es5",
+//          "es6"
+//       ],
+//       "target": "es5",
+//       "module": "commonjs",
+//       "moduleResolution": "node",
+//       "emitDecoratorMetadata": true,
+//       "experimentalDecorators": true,
+//    }
+// }
