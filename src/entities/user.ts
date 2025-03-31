@@ -27,7 +27,7 @@ export class User {
     @Column({ type: 'varchar', length: 255 })
     password_hash!: string;
 
-    @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
+    @Column({ type: 'varchar', length: 25, unique: true, nullable: true })
     username?: string;
 
     @Column({ type: 'enum', enum: ['admin', 'manager', 'user'], default: 'user' })

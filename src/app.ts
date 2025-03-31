@@ -1,6 +1,6 @@
 import express from 'express';
 import { mysqlDataSource } from "../app-data-source"
-
+import cookieParser from 'cookie-parser';
 
 mysqlDataSource
     .initialize()
@@ -26,7 +26,15 @@ console.log(process.env.DB_NAME)
 
 
 // Middlewares
-app.use(cors());
+// Configuración de CORS
+app.use(cors({
+    origin: 'http://127.0.0.1',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json()); // Para parsear body en JSON
 app.use(morgan('dev'));

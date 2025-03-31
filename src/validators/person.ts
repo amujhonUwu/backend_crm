@@ -1,79 +1,111 @@
-// validations/userRegistrationValidator.js
 import type { Request, Response, NextFunction } from 'express';
-const { check, validationResult } = require('express-validator');
+import { sendErrors, ErrorDetail } from './../helpers/responseHelper';
+import { check, validationResult } from 'express-validator';
 
 
-const validateUserRegistration = [
-  // Validar que el primer nombre sea obligatorio y no supere 100 caracteres
+export const validatePersonRegistration = [
+
+
   check('first_name')
     .notEmpty().withMessage('El nombre es obligatorio')
-    .isLength({ max: 100 }).withMessage('El nombre debe tener máximo 100 caracteres'),
+    .isLength({ max: 25 }).withMessage('El nombre debe tener máximo 25 caracteres'),
 
-  // Validar que el segundo nombre sea opcional y, si se envía, no supere 100 caracteres
+
   check('middle_name')
     .optional()
-    .isLength({ max: 100 }).withMessage('El segundo nombre debe tener máximo 100 caracteres'),
+    .isLength({ max: 25 }).withMessage('El segundo nombre debe tener máximo 25 caracteres'),
 
-  // Validar que el primer apellido sea obligatorio y no supere 100 caracteres
+
   check('last_name1')
     .notEmpty().withMessage('El primer apellido es obligatorio')
-    .isLength({ max: 100 }).withMessage('El primer apellido debe tener máximo 100 caracteres'),
+    .isLength({ max: 25 }).withMessage('El primer apellido debe tener máximo 25 caracteres'),
 
-  // Validar que el segundo apellido sea obligatorio y no supere 100 caracteres
+
   check('last_name2')
     .notEmpty().withMessage('El segundo apellido es obligatorio')
-    .isLength({ max: 100 }).withMessage('El segundo apellido debe tener máximo 100 caracteres'),
+    .isLength({ max: 25 }).withMessage('El segundo apellido debe tener máximo 100 caracteres'),
 
   // Validar que, si se envía, la fecha de nacimiento sea una fecha válida (formato ISO 8601)
   check('date_of_birth')
     .optional()
     .isISO8601().withMessage('La fecha de nacimiento debe ser una fecha válida'),
 
-  // Validar que el género sea obligatorio y uno de los valores permitidos
-  check('gender')
+
+  check('gender') 
     .notEmpty().withMessage('El género es obligatorio')
     .isIn(['Masculino', 'Femenino', 'Otro']).withMessage('Género no permitido'),
 
-  // Validar que el teléfono, si se envía, no supere 20 caracteres y tenga un formato aceptable
+
   check('phone')
     .optional()
-    .isLength({ max: 20 }).withMessage('El teléfono debe tener máximo 20 caracteres')
+    .custom((value: string, { req }) => {
+      const nationality = req.body.nationality;
+      if (nationality && (nationality.toLowerCase() === 'ecuatoriano/a')) {
+        if (value.length !== 10) {
+          throw new Error('El teléfono debe tener exactamente 10 dígitos para usuarios ecuatorianos');
+        }
+      } else {
+        if (value.length > 25) {
+          throw new Error('El teléfono no debe tener más de 25 dígitos');
+        }
+      }
+      return true;
+    })
     .matches(/^[0-9\-\+\s]*$/).withMessage('El teléfono solo puede contener números, espacios, + o -'),
 
-  // Validar que el tipo de documento sea obligatorio y uno de los permitidos
+
   check('document_type')
     .notEmpty().withMessage('El tipo de documento es obligatorio')
-    .isIn(['DNI', 'Pasaporte', 'Otro']).withMessage('Tipo de documento no permitido'),
+    .isIn(['Cédula', 'Pasaporte', 'Otro']).withMessage('Tipo de documento no permitido'),
 
-  // Validar que el número de documento, si se envía, no supere 50 caracteres
+
   check('document_number')
-    .optional()
-    .isLength(10).withMessage('El número de documento debe tener 10 caracteres'),
+    .custom((value: string, { req }) => {
+      const nationality = req.body.nationality;
+      if (nationality && (nationality.toLowerCase() === 'ecuatoriano/a')) {
+        if (value.length !== 10) {
+          throw new Error('La cédula debe tener exactamente 10 dígitos para usuarios ecuatorianos');
+        }
+      } else {
+        if (value.length > 25) {
+          throw new Error('El número de documento no debe tener más de 25 dígitos');
+        }
+      }
+      return true;
+    }),
 
-  // Validar que la dirección, si se envía, no supere 255 caracteres
+
   check('address')
     .optional()
     .isLength({ max: 255 }).withMessage('La dirección debe tener máximo 255 caracteres'),
 
-  // Validar que la nacionalidad, si se envía, no supere 100 caracteres
+    
   check('nationality')
-    .optional()
-    .isLength({ max: 100 }).withMessage('La nacionalidad debe tener máximo 100 caracteres'),
+    .isLength({ max: 60 }).withMessage('La nacionalidad debe tener máximo 60 caracteres'),
 
-  // Validar que el estado civil, si se envía, sea uno de los permitidos
+
   check('marital_status')
     .optional()
     .isIn(['Soltero', 'Casado', 'Divorciado', 'Viudo']).withMessage('Estado civil no permitido'),
 
   // Middleware para recoger y enviar los errores de validación
-  (req: Request, res:Response, next:NextFunction) => {
+  (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // Puedes personalizar el formato del error si lo deseas
-      return res.status(400).json({ errors: errors.array() });
+      const formattedErrors: ErrorDetail[] = errors.array().map(error => ({
+        msg: error.msg,
+        param: error.type === 'field' ? error.path : '',
+        location: error.type === 'field' ? error.location : 'body'
+      }));
+      
+      sendErrors(
+        res, 
+        formattedErrors,
+        "Datos incorrectos registrando a la persona",
+        400
+      );
     }
     next();
   },
 ];
 
-module.exports = { validateUserRegistration };

@@ -9,7 +9,7 @@ export const mysqlDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PSWD,
     database: process.env.DB_NAME,
-    entities: ["src/entity/*.ts"],
+    entities: ["src/entities/*.ts"],
     logging: true,
     synchronize: true,
 })
