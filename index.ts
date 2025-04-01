@@ -1,7 +1,8 @@
 import app from './src/app'
 import type {Request, Response} from "express";
 import routes from './src/routes';
-require('dotenv');
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.SRV_PORT || 8000;
 
