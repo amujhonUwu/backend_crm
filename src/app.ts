@@ -16,15 +16,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-
-
-console.log(process.env.DB_HOST)
-console.log(process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined)
-console.log(process.env.DB_USER)
-console.log(process.env.DB_PSWD)
-console.log(process.env.DB_NAME)
-
-
 // Middlewares
 // Configuración de CORS
 app.use(cors({
