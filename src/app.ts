@@ -1,7 +1,7 @@
 import express from 'express';
 import { mysqlDataSource } from "../app-data-source"
 import cookieParser from 'cookie-parser';
-
+import routes from './routes';
 mysqlDataSource
     .initialize()
     .then(() => {
@@ -29,5 +29,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(express.json()); // Para parsear body en JSON
 app.use(morgan('dev'));
+
+app.use('/api/', routes);
 
 export default app;
